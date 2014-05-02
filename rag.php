@@ -50,17 +50,22 @@ Bigcommerce::setCipher('RC4-SHA');
 
 
 	// RETURN DATA FOR EACH WEEK
-	var_dump([
-			"Today" => [
-				"Amount" => $totals,
-				"Count" => count($orders)
-			],
-			"Yesterday" => [
-				"Amount" => $totals2,
-				"Count" => count($orders2)
-			],
-			"Last Week" => [
-				"Amount" => $totals3,
-				"Count" => count($orders3)
-			]
-		]);
+$output =	json_encode(
+				["item" => [
+					[
+						"value" => $totals,
+						"text" => "Today (" . count($orders) . ")"
+					],
+					[
+						"value" => $totals2,
+						"text" => "Yesterday (" . count($orders2) . ")"
+					],
+					[
+						"value" => $totals3,
+						"text" => "Last Week (" . count($orders3) . ")"
+					]
+				]]
+			);
+
+print_r($output);
+		

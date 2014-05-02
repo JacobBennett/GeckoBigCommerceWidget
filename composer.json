@@ -1,0 +1,6 @@
+{
+    "require": {
+        "bigcommerce/api": "dev-master",
+        "nesbot/Carbon": "*"
+    }
+}

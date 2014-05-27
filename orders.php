@@ -25,7 +25,7 @@ function dd($var) {
 	// SET ORDER TO BE THE GET VAR OR A DEFAULT FOR TESTING
 	$order_number = $_GET['order'];
 
-
+	// GO GET THE ORDER
 	$order = Bigcommerce::getOrder($order_number);
 
 	// dd($order);
@@ -34,7 +34,7 @@ function dd($var) {
 	// SET UP A RETURN ARRAY 
 	$products = array();
 
-	// GO GET THE PICTURES FOR EACH OF THESE ORDERS
+	// GO GET THE PICTURES FOR EACH OF THESE PRODUCTS
 	foreach ($order->products as $product) {
 
 		//ONLY SHOW PHYSICAL PRODUCTS
@@ -52,6 +52,18 @@ function dd($var) {
 
 	}
 
+	// dd($order->shipping_addresses);
+
+	// GO GRAB THE SHIPPING ADDRESS
+	$shipping_address = $order->shipping_addresses[0];
+
+	// GET AND PARSE THE SHIPPING METHOD
+	$shipping_pieces = explode(" ", $shipping_address->shipping_method);
+	$shipping_carrier = $shipping_pieces[0];
+	// $shipping_method = str_replace(array('(', ')'), "", $shipping_pieces[1]);
+	$shipping_method = $shipping_pieces[1];
+
+
 ?>
 
 <html>
@@ -63,10 +75,13 @@ function dd($var) {
 			body {padding: 1em 0;}
 			table img {width: 8em;}
 			thead {font-size: 1.5em;}
-			tbody, .panel-body {font-size: 1.5em;}
+			tbody, .panel-body {font-size: 1.3em;}
 			.completed {background-color: #d9edf7;}
 			.completed > td {opacity: 0.5;}
 			tbody td:nth-child(3) {font-size: 2em;}
+			.panel-ups {border-color: #593d22 !important;}
+			.panel-ups > .panel-heading {background-color: #7a5833 !important;}
+			.shipping-carrier-image {width: 100%; height: auto;}
 		</style>
 	</head>
 
@@ -93,20 +108,31 @@ function dd($var) {
 											<h4>Name and Shipping</h4>
 										</div>
 										<div class="panel-body">
-											<?= $order->billing_address->first_name ?> <?= $order->billing_address->last_name ?><br/>
-											304 Bonair Drive<br/>
-											Normal, IL 61761
+											<?= $shipping_address->first_name ?> <?= $shipping_address->last_name ?><br/>
+											<?= ($shipping_address->company != "") ? $shipping_address->company."<br/>" : "" ?>
+											<?= $shipping_address->street_1 ?><br/>
+											<?= ($shipping_address->street_2 != "") ? $shipping_address->street_2."<br/>" : "" ?>
+											<?= $shipping_address->city ?>, <?= $shipping_address->state ?> <?= $shipping_address->zip ?>
 										</div>								
 									</div>
 								</div>
 
 								<div class="col-sm-6">
-									<div class="panel panel-primary">
+									<div class="panel panel-primary panel-<?= $shipping_carrier ?>">
 										<div class="panel-heading">
 											<h4>Shipping Provider & Method</h4>
 										</div>
 										<div class="panel-body">
-											USPS
+											<div class="row">
+												<div class="col-sm-4">
+													<img class="shipping-carrier-image" src="<?= $shipping_carrier ?>-logo.jpg" alt="<?= $shipping_carrier ?>"/>
+												</div>
+												<div class="col-sm-8">
+													<?= $shipping_carrier ?>
+													<?= $shipping_method ?>
+												</div>
+											</div>
+											
 										</div>								
 									</div>
 								</div>
